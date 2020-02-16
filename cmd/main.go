@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -14,7 +15,8 @@ func main() {
 	http.HandleFunc("/taishin", registerTaishinActivities)
 
 	// Start a web server.
-	http.ListenAndServe(":8080", nil)
+	// http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
 // The handler for the root path.
