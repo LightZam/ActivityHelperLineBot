@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -32,8 +31,10 @@ type User struct {
 func registerTaishinActivities(writer http.ResponseWriter, request *http.Request) {
 	body, _ := ioutil.ReadAll(request.Body)
 	defer request.Body.Close()
+	fmt.Println(body)
+	writer.Write(body)
 
-	var user User
-	json.Unmarshal(body, &user)
-	writer.Write([]byte(user.ID))
+	// var user User
+	// json.Unmarshal(body, &user)
+	// writer.Write([]byte(user.ID))
 }
