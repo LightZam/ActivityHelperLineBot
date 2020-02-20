@@ -74,17 +74,17 @@ func handleText(message *linebot.TextMessage, replyToken string) {
 }
 
 func registerTaishinActivities() {
-	if err := exec.Command("ActivityHelper.py").Run(); err != nil {
-		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py err")).Do()
-		if err != nil {
-			fmt.Println("fail to send message")
-		}
-	} else {
-		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py success")).Do()
-		if err != nil {
-			fmt.Println("fail to send message")
-		}
-	}
+	// if err := exec.Command("ActivityHelper.py").Run(); err != nil {
+	// 	_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py err")).Do()
+	// 	if err != nil {
+	// 		fmt.Println("fail to send message")
+	// 	}
+	// } else {
+	// 	_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py success")).Do()
+	// 	if err != nil {
+	// 		fmt.Println("fail to send message")
+	// 	}
+	// }
 }
 
 func 
