@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -15,7 +16,7 @@ func main() {
 	// Listen to the root path of the web app
 	http.HandleFunc("/", handler)
 
-	http.HandleFunc("/taishin", registerTaishinActivities)
+	http.HandleFunc("/callback", handleEvents)
 	var err error
 	bot, err = linebot.New(
 		os.Getenv("ChannelSecret"),
@@ -43,16 +44,7 @@ type User struct {
 	ID string `json:"id"`
 }
 
-func registerTaishinActivities(writer http.ResponseWriter, request *http.Request) {
-	// body, _ := ioutil.ReadAll(request.Body)
-	// defer request.Body.Close()
-	// fmt.Println(body)
-	// writer.Write(body)
-
-	// var user User
-	// json.Unmarshal(body, &user)
-	// writer.Write([]byte(user.ID))
-
+func handleEvents(writer http.ResponseWriter, request *http.Request) {
 	events, err := bot.ParseRequest(request)
 	if err != nil {
 		if err == linebot.ErrInvalidSignature {
@@ -68,10 +60,31 @@ func registerTaishinActivities(writer http.ResponseWriter, request *http.Request
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text)).Do(); err != nil {
-					log.Print(err)
-				}
+				handleText(message, event.ReplyToken)
 			}
 		}
 	}
 }
+
+func handleText(message *linebot.TextMessage, replyToken string) {
+	if _, err = bot.ReplyMessage(replyToken, linebot.NewTextMessage(message.Text)).Do(); err != nil {
+		registerTaishinActivities()
+		log.Print(err)
+	}
+}
+
+func registerTaishinActivities() {
+	if err := exec.Command("ActivityHelper.py").Run(); err != nil {
+		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py err")).Do()
+		if err != nil {
+			fmt.Println("fail to send message")
+		}
+	} else {
+		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py success")).Do()
+		if err != nil {
+			fmt.Println("fail to send message")
+		}
+	}
+}
+
+func 
