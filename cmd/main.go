@@ -25,6 +25,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	fmt.Println("fmt os env: ", os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"), os.Getenv("PORT"))
+	log.Print("log os env: ", os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"), os.Getenv("PORT"))
+
 	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
 		log.Fatal(err)
 	}
@@ -60,6 +63,8 @@ func registerTaishinActivities(writer http.ResponseWriter, request *http.Request
 		return
 	}
 	for _, event := range events {
+		fmt.Println("fmt event: ", event)
+		log.Print("log event: ", event)
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
