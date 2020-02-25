@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -92,6 +91,7 @@ func handleText(message *linebot.TextMessage, replyToken string) {
 func registerTaishinActivities(message *linebot.TextMessage, replyToken string) {
 	out, err := exec.Command("python", "ActivityHelper.py", "get", "-u", message.Text).Output()
 
+	fmt.Println(string(out))
 	if err != nil {
 		fmt.Println(err.Error())
 		// 	_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py err")).Do()
@@ -99,14 +99,14 @@ func registerTaishinActivities(message *linebot.TextMessage, replyToken string) 
 		// 		fmt.Println("fail to send message")
 		// 	}
 	} else {
-		var events []TaishinEvent
-		json.Unmarshal(out, &events)
-		fmt.Println(events)
-		// fmt.Println(events[0].Title)
-		// fmt.Println(events[0].Description)
-		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(events[0].Title)).Do()
-		if err != nil {
-			fmt.Println("fail to send message")
-		}
+		// var events []TaishinEvent
+		// json.Unmarshal(out, &events)
+		// fmt.Println(events)
+		// // fmt.Println(events[0].Title)
+		// // fmt.Println(events[0].Description)
+		// _, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(events[0].Title)).Do()
+		// if err != nil {
+		// 	fmt.Println("fail to send message")
+		// }
 	}
 }
