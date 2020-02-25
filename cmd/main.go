@@ -37,8 +37,7 @@ func main() {
 	// handle bot
 	http.HandleFunc("/callback", handleEvents)
 
-	// if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
 		log.Fatal(err)
 	}
 }
