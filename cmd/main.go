@@ -101,8 +101,9 @@ func registerTaishinActivities(message *linebot.TextMessage, replyToken string) 
 	} else {
 		var events []TaishinEvent
 		json.Unmarshal(out, &events)
-		fmt.Println(events[0].Title)
-		fmt.Println(events[0].Description)
+		fmt.Println(events)
+		// fmt.Println(events[0].Title)
+		// fmt.Println(events[0].Description)
 		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(events[0].Title)).Do()
 		if err != nil {
 			fmt.Println("fail to send message")
