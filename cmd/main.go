@@ -90,7 +90,7 @@ func handleText(message *linebot.TextMessage, replyToken string) {
 }
 
 func registerTaishinActivities(message *linebot.TextMessage, replyToken string) {
-	out, err := exec.Command("python3", "ActivityHelper.py", "get", "-u", message.Text).Output()
+	out, err := exec.Command("python", "ActivityHelper.py", "get", "-u", message.Text).Output()
 
 	if err != nil {
 		fmt.Println(err.Error())
