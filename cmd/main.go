@@ -64,7 +64,7 @@ func handleEvents(writer http.ResponseWriter, request *http.Request) {
 	}
 	for _, event := range events {
 		fmt.Println("fmt event: ", event)
-		log.Print("log event: ", event)
+		fmt.Println("fmt event Source: ", event.Source)
 		if event.Type == linebot.EventTypeMessage {
 			userID := event.Source.UserID
 			groupID := event.Source.GroupID
@@ -93,7 +93,7 @@ func registerTaishinActivities(message *linebot.TextMessage, replyToken string) 
 	out, err := exec.Command("python3", "ActivityHelper.py", "get", "-u", message.Text).Output()
 
 	if err != nil {
-		// 	fmt.Println(err.Error())
+		fmt.Println(err.Error())
 		// 	_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py err")).Do()
 		// 	if err != nil {
 		// 		fmt.Println("fail to send message")
