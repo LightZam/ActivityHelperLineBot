@@ -19,8 +19,6 @@ class OCR:
                 os.mkdir(self.tmp_path)
         except OSError:
             print("Creation of the directory %s failed" % self.tmp_path)
-        else:
-            print("Successfully created the directory %s " % self.tmp_path)
 
     def parse(self):
         img_path = self.target
@@ -30,7 +28,7 @@ class OCR:
 
         img = Image.open(img_path)
         text = pytesseract.image_to_string(img, lang='eng')
-        print('Captcha: %s' % text)
+        # print('Captcha: %s' % text)
         return text
 
     def download_image(self, url):

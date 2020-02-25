@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,11 +13,13 @@ import (
 
 var bot *linebot.Client
 
-func main() {
-	// Listen to the root path of the web app
-	http.HandleFunc("/", handler)
+// TaishinEvent store taishin activities information
+type TaishinEvent struct {
+	Title       string `json:"title"`
+	Description string `json:"desc"`
+}
 
-	http.HandleFunc("/callback", handleEvents)
+func initLineBot() {
 	var err error
 	bot, err = linebot.New(
 		os.Getenv("ChannelSecret"),
@@ -25,11 +28,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
 
-	fmt.Println("fmt os env: ", os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"), os.Getenv("PORT"))
-	log.Print("log os env: ", os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"), os.Getenv("PORT"))
+func main() {
+	initLineBot()
+	// Listen to the root path of the web app
+	http.HandleFunc("/", handler)
+	// handle bot
+	http.HandleFunc("/callback", handleEvents)
 
-	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
+	// if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -58,6 +67,11 @@ func handleEvents(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("fmt event: ", event)
 		log.Print("log event: ", event)
 		if event.Type == linebot.EventTypeMessage {
+			userID := event.Source.UserID
+			groupID := event.Source.GroupID
+			roomID := event.Source.RoomID
+
+			fmt.Println("userID", userID, "groupID", groupID, "roomID", roomID)
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				handleText(message, event.ReplyToken)
@@ -67,24 +81,32 @@ func handleEvents(writer http.ResponseWriter, request *http.Request) {
 }
 
 func handleText(message *linebot.TextMessage, replyToken string) {
-	if _, err = bot.ReplyMessage(replyToken, linebot.NewTextMessage(message.Text)).Do(); err != nil {
-		registerTaishinActivities()
-		log.Print(err)
-	}
-}
+	registerTaishinActivities(message, replyToken)
+	// if message.Text == "註冊" {
+	// }
 
-func registerTaishinActivities() {
-	// if err := exec.Command("ActivityHelper.py").Run(); err != nil {
-	// 	_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py err")).Do()
-	// 	if err != nil {
-	// 		fmt.Println("fail to send message")
-	// 	}
-	// } else {
-	// 	_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py success")).Do()
-	// 	if err != nil {
-	// 		fmt.Println("fail to send message")
-	// 	}
+	// if message.Text == "活動" {
+
 	// }
 }
 
-func 
+func registerTaishinActivities(message *linebot.TextMessage, replyToken string) {
+	out, err := exec.Command("python3", "ActivityHelper.py", "get", "-u", message.Text).Output()
+
+	if err != nil {
+		// 	fmt.Println(err.Error())
+		// 	_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage("py err")).Do()
+		// 	if err != nil {
+		// 		fmt.Println("fail to send message")
+		// 	}
+	} else {
+		var events []TaishinEvent
+		json.Unmarshal(out, &events)
+		fmt.Println(events[0].Title)
+		fmt.Println(events[0].Description)
+		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(events[0].Title)).Do()
+		if err != nil {
+			fmt.Println("fail to send message")
+		}
+	}
+}
