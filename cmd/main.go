@@ -62,7 +62,6 @@ func handleEvents(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("fmt event: ", event)
 		fmt.Println("fmt event Source: ", event.Source)
 		if event.Type == linebot.EventTypeMessage {
-			users
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				handleText(message, event.ReplyToken)
@@ -72,6 +71,15 @@ func handleEvents(writer http.ResponseWriter, request *http.Request) {
 }
 
 func handleText(message *linebot.TextMessage, replyToken string) {
+	getTaishinActivities(message, replyToken)
+	
+	if users[event.Source.UserID] == nil {
+		print("Please register identity first.")
+		users[event.Source.UserID] = message.Text
+		print("user: ", users[event.Source.UserID])
+	}
+
+
 	if message.Text == "註冊" {
 
 	}
