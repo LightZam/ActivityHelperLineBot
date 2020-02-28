@@ -72,13 +72,12 @@ func handleEvents(writer http.ResponseWriter, request *http.Request) {
 
 func handleText(message *linebot.TextMessage, replyToken string) {
 	getTaishinActivities(message, replyToken)
-	
+
 	if users[event.Source.UserID] == nil {
 		print("Please register identity first.")
 		users[event.Source.UserID] = message.Text
 		print("user: ", users[event.Source.UserID])
 	}
-
 
 	if message.Text == "註冊" {
 
@@ -101,19 +100,19 @@ func getTaishinActivities(message *linebot.TextMessage, replyToken string) {
 	} else {
 		var events []TaishinEvent
 		json.Unmarshal(out, &events)
-		fmt.Println("events:" , events)
+		fmt.Println("events:", events)
 		var title string
-		for event := range events {
+		for i, event := range events {
+			fmt.Println("index: ", i)
 			fmt.Println("title before: ", title)
 			if title == "" {
 				title = event.Title
-				} else {
-					title = title + "\n" +  event.Title
-				}
+			} else {
+				title = title + "\n" + event.Title
 			}
 			fmt.Println("title after: ", title)
 		}
-		
+
 		fmt.Println("replyToken: ", replyToken, " title: ", title)
 		_, err = bot.ReplyMessage(replyToken, linebot.NewTextMessage(title)).Do()
 		if err != nil {
