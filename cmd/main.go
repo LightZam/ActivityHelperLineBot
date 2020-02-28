@@ -73,7 +73,8 @@ func handleEvents(writer http.ResponseWriter, request *http.Request) {
 func handleText(message *linebot.TextMessage, event *linebot.Event) {
 	getTaishinActivities(message, event.ReplyToken)
 
-	if users[event.Source.UserID] == nil {
+	print("user: ", users[event.Source.UserID])
+	if users[event.Source.UserID] == "" {
 		print("Please register identity first.")
 		users[event.Source.UserID] = message.Text
 		print("user: ", users[event.Source.UserID])
