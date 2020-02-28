@@ -12,7 +12,7 @@ import (
 )
 
 var bot *linebot.Client
-users := make(map[string]string)
+var users = make(map[string]string)
 
 // TaishinEvent store taishin activities information
 type TaishinEvent struct {
@@ -115,7 +115,7 @@ func getTaishinActivities(message *linebot.TextMessage, replyToken string) {
 		}
 		
 		fmt.Println("replyToken: ", replyToken, " title: ", title)
-		_, err := bot.ReplyMessage(replyToken, linebot.NewTextMessage(title)).Do()
+		_, err = bot.ReplyMessage(replyToken, linebot.NewTextMessage(title)).Do()
 		if err != nil {
 			fmt.Println("fail to send message")
 		}
