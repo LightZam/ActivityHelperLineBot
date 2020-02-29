@@ -94,7 +94,7 @@ class ActivityHelper():
         r = self.session.get(
             'https://mkp-tsbank.cdn.hinet.net/tscccms/register/select', headers=headers)
         activities = r.html.find(
-            '.form-item:not(.form-item-selected) .form-item-title span:not(.sr-only)')
+            '.form-item:not(.form-item-selected) .form-item-title')
         activities_desc = r.html.find(
             '.form-item .form-item-more-description')
         
